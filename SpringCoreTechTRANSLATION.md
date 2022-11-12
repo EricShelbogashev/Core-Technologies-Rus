@@ -32,28 +32,30 @@
 ### 1.2.1. Метаданные конфигурации
 Как показано на предыдущей диаграмме, контейнер Spring IoC использует форму метаданных конфигурации. Метаданные сообщают контейнеру Spring о том, как создавать, настраивать и собирать объекты в вашем приложении.
 
-Метаданные конфигурации традиционно имеют простой и интуитивный XML формат, использование которого преобладает в этой главе
-Configuration metadata is traditionally supplied in a simple and intuitive XML format, which is what most of this chapter uses to convey key concepts and features of the Spring IoC container.
+Метаданные конфигурации традиционно имеют простой и интуитивный XML формат, использующийся в этой главе, чтобы передать основные идеи и особенности Spring IoC контейнера.
 
-XML-based metadata is not the only allowed form of configuration metadata. The Spring IoC container itself is totally decoupled from the format in which this configuration metadata is actually written. These days, many developers choose [Java-based configuration](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-java) for their Spring applications.
+> XML - не единственное допустимое представление метаданных конфигурации. Spring IoC контейнер не зависит от формата, в котором они представлены. В настоящее время многие разработчики используют [конфигурацию на основе Java](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-java) в своих Spring приложениях.
 
-For information about using other forms of metadata with the Spring container, see:
+Для получения информации об использовании других форм метаданных с контейнером Spring смотрите:
+* [Конфигурация на основе аннотаций](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-annotation-config): Spring 2.5 предоставил поддержку метаданных конфигурации на основе аннотаций.
+* [Конфигурация на основе Java](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-java): Начиная с Spring 3.0, многие функции, предоставляемые проектом Spring JavaConfig, стали частью ядра Spring Framework.
 
--   [Annotation-based configuration](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-annotation-config): Spring 2.5 introduced support for annotation-based configuration metadata.
--   [Java-based configuration](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-java): Starting with Spring 3.0, many features provided by the Spring JavaConfig project became part of the core Spring Framework. Thus, you can define beans external to your application classes by using Java rather than XML files. To use these new features, see the [`@Configuration`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Configuration.html), [`@Bean`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Bean.html), [`@Import`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Import.html), and [`@DependsOn`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/DependsOn.html) annotations.
+Таким образом, вы можете определить bean-компоненты, внешние к классам вашего приложения, используя Java вместо файлов XML. Чтобы использовать эти новые функции, ознакомьтесь с [`@Configuration`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Configuration.html), [`@Bean`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Bean.html), [`@Import`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Import.html), и [`@DependsOn`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/DependsOn.html) аннотациями.
 
-Spring configuration consists of at least one and typically more than one bean definition that the container must manage. XML-based configuration metadata configures these beans as `<bean/>` elements inside a top-level `<beans/>` element. Java configuration typically uses `@Bean`-annotated methods within a `@Configuration` class.
+Конфигурация Spring состоит как минимум из одного и, как правило, более одного определения bean-компонента, которым должен управлять контейнер. XML-метаданные этого компонента представляют из себя дочерние `<bean/>` элементы внутри родительского `<beans/>` элемента. Конфигурация Java обычно использует методы с аннотациями `@Bean` в классе `@Configuration`.
 
-These bean definitions correspond to the actual objects that make up your application. Typically, you define service layer objects, data access objects (DAOs), presentation objects such as Struts `Action` instances, infrastructure objects such as Hibernate `SessionFactories`, JMS `Queues`, and so forth. Typically, one does not configure fine-grained domain objects in the container, because it is usually the responsibility of DAOs and business logic to create and load domain objects. However, you can use Spring’s integration with AspectJ to configure objects that have been created outside the control of an IoC container. See [Using AspectJ to dependency-inject domain objects with Spring](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#aop-atconfigurable).
+Эти определения bean-компонентов соответствуют реальным объектам, из которых состоит ваше приложение. Как правило, вы определяете объекты сервисного уровня (service objects), объекты доступа к данным (data access objects, DAOs), объекты представления, такие как экземпляры Struts `Action`, объекты инфраструктуры вроде Hibernate `SessionFactories` , JMS `Queues`, и т.д. Обычно, 
 
-The following example shows the basic structure of XML-based configuration metadata:
+Как правило, fine-grained объекты домена в контейнере не настраиваются, поскольку за их создание и загрузку обычно отвечают DAO и бизнес-логика. Однако вы можете использовать интеграцию Spring с AspectJ для настройки объектов, которые были созданы вне контроля контейнера IoC. [См. Использование AspectJ для внедрения зависимостей в объекты домена с помощью Spring](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#aop-atconfigurable).
+
+В следующем примере показана базовая структура метаданных конфигурации на основе XML:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
-        https://www.springframework.org/schema/beans/spring-beans.xsd">
+	    https://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="..." class="...">  
         <!-- collaborators and configuration for this bean go here -->
@@ -62,14 +64,13 @@ The following example shows the basic structure of XML-based configuration metad
     <bean id="..." class="...">
         <!-- collaborators and configuration for this bean go here -->
     </bean>
-
+    
     <!-- more bean definitions go here -->
-
+    
 </beans>
 ```
 
-The `id` attribute is a string that identifies the individual bean definition.
+1) Атрибут `id`  - строка-идентификатор, сопоставляющая определение с конкретным bean-компонентом.
+2) Атрибут `class` определяет тип bean-компонента и содержит полное имя класса.
 
-The `class` attribute defines the type of the bean and uses the fully qualified classname.
-
-The value of the `id` attribute refers to collaborating objects. The XML for referring to collaborating objects is not shown in this example. See [Dependencies](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-dependencies) for more information.
+Значение `id` атрибута относится к взаимодействующим объектам. XML, не показанным в данном примере. См. [Dependencies](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-dependencies) для получения дополнительных сведений.
